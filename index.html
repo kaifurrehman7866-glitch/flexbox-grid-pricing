@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flexbox vs Grid — Pricing Section Playground</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --card: #ffffff;
+    --accent: #6366f1;
+    --accent-dark: #4338ca;
+    --text-light: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+
+  .intro {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 0;
+    text-align: center;
+  }
+
+  .intro h1 { font-size: 1.8rem; margin-bottom: 8px; }
+  .intro p { color: var(--text-muted); }
+
+  .section-label {
+    max-width: 1100px;
+    margin: 48px auto 0;
+    padding: 0 24px;
+  }
+
+  .section-label h2 {
+    font-size: 1.2rem;
+    display: inline-block;
+    background: var(--accent);
+    padding: 4px 14px;
+    border-radius: 6px;
+    margin: 0;
+  }
+
+  /* ============================================
+     SHARED PRICING PAGE STYLES (header/footer/card look)
+     Layout mechanics differ per version — see below
+     ============================================ */
+
+  .pricing-page {
+    max-width: 1100px;
+    margin: 16px auto 0;
+    background: var(--panel);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #334155;
+  }
+
+  .page-header {
+    padding: 28px 24px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  }
+  .page-header h3 { margin: 0 0 4px; font-size: 1.4rem; }
+  .page-header p { margin: 0; color: #e0e7ff; font-size: 0.95rem; }
+
+  .page-footer {
+    padding: 18px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid #334155;
+  }
+
+  .pricing-card {
+    background: var(--card);
+    color: #1e293b;
+    border-radius: 10px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .pricing-card h4 { margin: 0 0 4px; font-size: 1.1rem; color: var(--accent-dark); }
+  .pricing-card .price { font-size: 2rem; font-weight: 700; margin: 8px 0; }
+  .pricing-card .price span { font-size: 0.9rem; font-weight: 400; color: var(--text-muted); }
+  .pricing-card ul { list-style: none; padding: 0; margin: 16px 0; text-align: left; }
+  .pricing-card li { padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  .pricing-card button {
+    margin-top: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+  }
+  .pricing-card.featured { transform: scale(1.03); box-shadow: 0 8px 24px rgba(99,102,241,0.35); }
+
+  /* ============================================
+     VERSION 1: FLEXBOX
+     ============================================ */
+
+  .flex-columns {
+    display: flex;
+    gap: 20px;
+    padding: 24px;
+  }
+
+  .flex-columns .pricing-card {
+    flex: 1 1 0;        /* three equal-width columns */
+    min-width: 0;        /* prevents overflow on long content */
+  }
+
+  @media (max-width: 600px) {
+    .flex-columns {
+      flex-direction: column;   /* stack into single column */
+    }
+    .pricing-card.featured { transform: none; }
+  }
+
+  /* ============================================
+     VERSION 2: CSS GRID
+     ============================================ */
+
+  .grid-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 24px;
+  }
+
+  @media (max-width: 600px) {
+    .grid-columns {
+      grid-template-columns: 1fr;   /* stack into single column */
+    }
+    .pricing-card.featured { transform: none; }
+  }
+
+  /* ============================================
+     COMPARISON WRITE-UP
+     ============================================ */
+
+  .comparison {
+    max-width: 1100px;
+    margin: 40px auto 60px;
+    padding: 0 24px;
+  }
+
+  .comparison h2 { font-size: 1.2rem; margin-bottom: 16px; }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--panel);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .comparison-table th, .comparison-table td {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid #334155;
+    font-size: 0.92rem;
+  }
+
+  .comparison-table th {
+    background: #263449;
+    color: var(--text-light);
+  }
+
+  .comparison-table td:first-child { color: var(--accent); font-weight: 600; white-space: nowrap; }
+
+  .resize-hint {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 8px 0 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Flexbox vs Grid: 3-Column Pricing Section</h1>
+  <p>The same layout, built twice. Resize the browser below 600px to see both stack into a single column.</p>
+</div>
+
+<!-- ============ FLEXBOX VERSION ============ -->
+<div class="section-label"><h2>Version 1 — Flexbox</h2></div>
+<div class="pricing-page">
+  <div class="page-header">
+    <h3>Simple, Transparent Pricing</h3>
+    <p>Choose the plan that fits your team</p>
+  </div>
+
+  <div class="flex-columns">
+    <div class="pricing-card">
+      <h4>Starter</h4>
+      <div class="price">$9<span>/mo</span></div>
+      <ul>
+        <li>1 project</li>
+        <li>5GB storage</li>
+        <li>Email support</li>
+      </ul>
+      <button>Choose Starter</button>
+    </div>
+
+    <div class="pricing-card featured">
+      <h4>Pro</h4>
+      <div class="price">$29<span>/mo</span></div>
+      <ul>
+        <li>Unlimited projects</li>
+        <li>100GB storage</li>
+        <li>Priority support</li>
+      </ul>
+      <button>Choose Pro</button>
+    </div>
+
+    <div class="pricing-card">
+      <h4>Enterprise</h4>
+      <div class="price">$79<span>/mo</span></div>
+      <ul>
+        <li>Unlimited everything</li>
+        <li>1TB storage</li>
+        <li>Dedicated manager</li>
+      </ul>
+      <button>Choose Enterprise</button>
+    </div>
+  </div>
+
+  <div class="page-footer">Built with display: flex — .flex-columns { display:flex; gap:20px; }</div>
+</div>
+<p class="resize-hint">↑ flex-direction: column below 600px</p>
+
+<!-- ============ GRID VERSION ============ -->
+<div class="section-label"><h2>Version 2 — CSS Grid</h2></div>
+<div class="pricing-page">
+  <div class="page-header">
+    <h3>Simple, Transparent Pricing</h3>
+    <p>Choose the plan that fits your team</p>
+  </div>
+
+  <div class="grid-columns">
+    <div class="pricing-card">
+      <h4>Starter</h4>
+      <div class="price">$9<span>/mo</span></div>
+      <ul>
+        <li>1 project</li>
+        <li>5GB storage</li>
+        <li>Email support</li>
+      </ul>
+      <button>Choose Starter</button>
+    </div>
+
+    <div class="pricing-card featured">
+      <h4>Pro</h4>
+      <div class="price">$29<span>/mo</span></div>
+      <ul>
+        <li>Unlimited projects</li>
+        <li>100GB storage</li>
+        <li>Priority support</li>
+      </ul>
+      <button>Choose Pro</button>
+    </div>
+
+    <div class="pricing-card">
+      <h4>Enterprise</h4>
+      <div class="price">$79<span>/mo</span></div>
+      <ul>
+        <li>Unlimited everything</li>
+        <li>1TB storage</li>
+        <li>Dedicated manager</li>
+      </ul>
+      <button>Choose Enterprise</button>
+    </div>
+  </div>
+
+  <div class="page-footer">Built with display: grid — .grid-columns { display:grid; grid-template-columns: repeat(3,1fr); gap:20px; }</div>
+</div>
+<p class="resize-hint">↑ grid-template-columns: 1fr below 600px</p>
+
+<!-- ============ COMPARISON WRITE-UP ============ -->
+<div class="comparison">
+  <h2>Comparison: What Was Easier / Harder</h2>
+  <table class="comparison-table">
+    <tr>
+      <th>Aspect</th>
+      <th>Flexbox</th>
+      <th>Grid</th>
+    </tr>
+    <tr>
+      <td>Setting up 3 equal columns</td>
+      <td>Easy — <code>flex: 1 1 0</code> on each card does it, but it's really "distribute space evenly," not a true column system.</td>
+      <td>Just as easy, and more explicit — <code>grid-template-columns: repeat(3, 1fr)</code> reads like an actual column definition.</td>
+    </tr>
+    <tr>
+      <td>Making the responsive stack</td>
+      <td>One line: <code>flex-direction: column</code>. Very intuitive since Flexbox is already 1-dimensional.</td>
+      <td>Also one line: <code>grid-template-columns: 1fr</code>. Slightly less obvious conceptually (you're collapsing the column tracks, not "changing direction").</td>
+    </tr>
+    <tr>
+      <td>Gaps between cards</td>
+      <td>Same — <code>gap</code> works identically in both.</td>
+      <td>Same — <code>gap</code> works identically in both.</td>
+    </tr>
+    <tr>
+      <td>Controlling card width precisely</td>
+      <td>Slightly fiddly — needed <code>min-width: 0</code> to stop long content (like the ul list) from forcing cards wider than their flex-basis.</td>
+      <td>No fiddling needed — Grid tracks strictly respect the <code>1fr</code> sizing regardless of content, so nothing overflowed.</td>
+    </tr>
+    <tr>
+      <td>Header + card row + footer structure</td>
+      <td>Natural — Flexbox is great for stacking a header, a row of cards, and a footer since each is really just a block in normal flow (only the card row itself needed flex).</td>
+      <td>Same result, but felt like slight overkill to reach for Grid just for the card row when the outer header/footer/row structure is really a simple vertical stack.</td>
+    </tr>
+    <tr>
+      <td>Overall mental model</td>
+      <td>Thinks in terms of "items in a line that can wrap/shrink/grow" — very natural for a single row of cards.</td>
+      <td>Thinks in terms of "a layout grid with defined tracks" — more setup upfront (defining columns), but scales better if this layout ever needed uneven columns or a 2D structure (e.g. featured card spanning rows).</td>
+    </tr>
+  </table>
+  <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 16px;">
+    <strong>Takeaway:</strong> for a single row of equal-width cards like this pricing section, Flexbox and Grid end up almost identical in code length and difficulty. Flexbox felt slightly more natural since the layout is genuinely one-dimensional (just three items in a row), while Grid's explicit track definitions would start paying off more if the layout became two-dimensional — e.g. adding a comparison table below the cards that needs to align to the same columns.
+  </p>
+</div>
+
+</body>
+</html>
